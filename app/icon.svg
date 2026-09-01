@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1398 1398">
+  <style>
+    /* Versión en negativo del isotipo, para que se lea a 16px en la pestaña.
+       El naranja se mantiene fijo en ambos temas: es el ancla de marca. */
+    .disc { fill: #06213e }
+    .a    { stroke: #ffffff }
+    .b    { stroke: #7fa3bd }
+    @media (prefers-color-scheme: dark) {
+      .disc { fill: #f2f6fa }
+      .a    { stroke: #0f3559 }
+      .b    { stroke: #49738b }
+    }
+  </style>
+  <circle class="disc" cx="699" cy="699" r="699"/>
+  <g fill="none" stroke-width="151" stroke-linecap="round">
+    <path d="M444 722 348 860" stroke="#f3703c"/>
+    <path class="b" d="M563 515 776 884"/>
+    <path class="a" d="M825 528 1046 892"/>
+  </g>
+</svg>

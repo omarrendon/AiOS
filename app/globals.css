@@ -1,26 +1,123 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  /* ===== Marca ===== */
+  --color-brand-300: #6ea8ff; /* highlights sobre fondo oscuro */
+  --color-brand-500: #0062ff; /* acento principal / CTA */
+  --color-brand-600: #004bb5; /* hover de CTA */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* ===== Superficies oscuras ===== */
+  --color-navy-900: #0a1e2f; /* hero, cajas oscuras */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* ===== Superficies claras ===== */
+  --color-surface: #f5f7fa;
+  --color-surface-raised: #f9fbfd;
+  --color-surface-card: #ffffff;
+
+  /* ===== Texto ===== */
+  --color-ink: #1a2833;
+  --color-ink-nav: #1a2e42;
+  --color-ink-muted: #3d5670;
+  --color-ink-soft: #4a6a8a;
+
+  /* ===== Logotipo =====
+     Colores propios de la marca, tomados del original. No son parte de la
+     paleta de UI: se usan solo dentro del logotipo. */
+  --color-logo-ink: #06213e;
+  --color-logo-navy: #0f3559;
+  --color-logo-steel: #49738b;
+  --color-logo-accent: #f3703c;
+
+  /* ===== Bordes ===== */
+  --color-line: #e8edf3;
+
+  /* ===== Tipografía ===== */
+  --font-sans: var(--font-ibm-plex-sans), ui-sans-serif, system-ui, sans-serif;
+
+  /* ===== Animaciones ===== */
+  --animate-pulse-glow: pulseGlow 4s ease-in-out infinite;
+  --animate-card-entrance: cardEntrance 0.6s ease forwards;
+
+  @keyframes pulseGlow {
+    0%,
+    100% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+
+
+  @keyframes cardEntrance {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-surface);
+  color: var(--color-ink);
+}
+
+/* ===== Camino de servicios =====
+   Línea continua con un brillo que la recorre. Se prefiere sobre animar la
+   longitud (scaleX/scaleY): un camino que se encoge se lee como interrumpido. */
+
+@keyframes pathFlowX {
+  from {
+    background-position: 200% 50%;
+  }
+  to {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes pathFlowY {
+  from {
+    background-position: 50% 200%;
+  }
+  to {
+    background-position: 50% 0%;
+  }
+}
+
+@utility path-line-x {
+  background-image: linear-gradient(
+    90deg,
+    var(--color-brand-500),
+    var(--color-brand-300),
+    var(--color-brand-500)
+  );
+  background-size: 200% 100%;
+  animation: pathFlowX 3s linear infinite;
+}
+
+@utility path-line-y {
+  background-image: linear-gradient(
+    180deg,
+    var(--color-brand-500),
+    var(--color-brand-300),
+    var(--color-brand-500)
+  );
+  background-size: 100% 200%;
+  animation: pathFlowY 3s linear infinite;
+}
+
+/* Respetar la preferencia de menos movimiento en todo el sitio */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
