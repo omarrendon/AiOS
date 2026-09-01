@@ -32,9 +32,9 @@ Para sombras y gradientes que sí necesitan valor arbitrario, referencia el toke
 | Token | Valor | Rol |
 |---|---|---|
 | `brand-300` | `#6ea8ff` | Acento **sobre fondo oscuro**: etiquetas, palabras destacadas, fin de gradiente |
-| `brand-500` | `#0062ff` | Acento principal. CTAs, iconos, bordes activos, puntos del pipeline |
+| `brand-500` | `#0062ff` | Acento principal. CTAs, iconos, bordes activos, nodos del camino |
 | `brand-600` | `#004bb5` | **Solo** hover de `brand-500` en botones |
-| `navy-900` | `#0a1e2f` | Fondo de bloques oscuros: hero, cajas destacadas. También texto de títulos sobre claro |
+| `navy-900` | `#0a1e2f` | Fondo de bloques oscuros: hero, cajas destacadas. También títulos sobre claro |
 | `surface` | `#f5f7fa` | Fondo del documento (`body`) |
 | `surface-raised` | `#f9fbfd` | Fondo de tarjeta en reposo — apenas se despega del fondo |
 | `surface-card` | `#ffffff` | Fondo de tarjeta **en hover**, y fondo del footer |
@@ -53,6 +53,9 @@ Colores exclusivos del logotipo, **fuera** de la paleta de UI. Úsalos solo dent
 | `logo-navy` | `#0f3559` | Barra derecha |
 | `logo-steel` | `#49738b` | Barra central |
 | `logo-accent` | `#f3703c` | Barra corta (naranja) |
+
+La paleta de UI y la del logotipo son deliberadamente distintas: el azul eléctrico da a la
+interfaz más energía que el acero apagado del isotipo.
 
 Sobre `navy-900` no se usan los tokens `ink-*` — el texto es `white`, `white/85`, `white/75`,
 `white/65` o `white/50` según jerarquía descendente.
@@ -178,6 +181,23 @@ gradiente superior del patrón anterior.
 rounded-lg border border-white/8 bg-white/6 backdrop-blur-[4px]
 transition-all duration-300 hover:-translate-y-1 hover:bg-white/12
 ```
+
+## Header y menú móvil
+
+Por debajo de `md` (768px) los enlaces y el CTA del header se recogen en un desplegable.
+`site-header.tsx` mantiene ambas versiones del marcado (`hidden md:flex` para escritorio,
+panel `md:hidden` para móvil) compartiendo las clases base en `LINK_BASE` y `CTA_BASE`.
+
+El panel se anima con `opacity` + `translate-y` + `visibility`, y se cierra al pulsar
+cualquier elemento, con Escape, y al cruzar el breakpoint hacia escritorio.
+
+Dos decisiones que no son estéticas:
+
+- **Va en superposición (`absolute`), no empujando el contenido.** Si empujara, la altura del
+  header cambiaría al cerrarse y el desplazamiento hacia el ancla aterrizaría desviado.
+- **Fondo opaco (`bg-surface-card`), no el `bg-white/96` translúcido del header.** Ese 4% basta
+  para que el texto blanco del hero se transparente como un fantasma detrás de los enlaces;
+  se comprobó. En una franja fina como el header no se nota, en un panel sí.
 
 ## Logotipo
 
