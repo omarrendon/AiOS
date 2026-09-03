@@ -28,7 +28,7 @@ export function Hero() {
       {/* Resplandor decorativo del fondo */}
       <div
         aria-hidden
-        className="absolute top-[-20%] right-[-5%] h-[140%] w-[45%] rotate-10 animate-pulse-glow bg-[linear-gradient(135deg,rgba(0,98,255,0.06)_0%,transparent_70%)]"
+        className="absolute top-[-20%] right-[-5%] h-[140%] w-[45%] rotate-10 animate-pulse-glow bg-[linear-gradient(135deg,rgba(242,101,34,0.06)_0%,transparent_70%)]"
       />
 
       <Container className="relative z-10 grid items-center gap-9 lg:grid-cols-2 lg:gap-[50px]">
@@ -66,15 +66,19 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="grid max-w-[400px] grid-cols-2 gap-2.5 sm:gap-4 lg:max-w-none">
+        <div className="grid grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
           {CAPABILITIES.map(({ Icon, label, sub }) => (
             <div
               key={label}
-              className="rounded-lg border border-white/8 bg-white/6 px-2.5 py-3.5 text-center backdrop-blur-[4px] transition-all duration-300 hover:-translate-y-1 hover:bg-white/12 sm:px-5 sm:py-6"
+              className="rounded-lg border border-white/8 bg-white/6 px-1.5 py-3 text-center backdrop-blur-[4px] transition-all duration-300 hover:-translate-y-1 hover:bg-white/12 sm:px-2.5 sm:py-4 lg:px-3 lg:py-5"
             >
-              <Icon className="mx-auto mb-2.5 size-8 text-white/70" />
-              <div className="text-sm font-medium text-white/85">{label}</div>
-              <div className="text-xs text-white/50">{sub}</div>
+              <Icon className="mx-auto mb-2 size-6 text-white/70 sm:size-7 lg:mb-2.5 lg:size-8" />
+              <div className="text-xs leading-tight font-medium text-white/85 sm:text-sm">
+                {label}
+              </div>
+              <div className="mt-0.5 text-[0.65rem] leading-tight text-white/50 sm:text-xs">
+                {sub}
+              </div>
             </div>
           ))}
         </div>

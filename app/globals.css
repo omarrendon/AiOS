@@ -2,12 +2,12 @@
 
 @theme {
   /* ===== Marca ===== */
-  --color-brand-300: #6ea8ff; /* highlights sobre fondo oscuro */
-  --color-brand-500: #0062ff; /* acento principal / CTA */
-  --color-brand-600: #004bb5; /* hover de CTA */
+  --color-brand-300: #f28f60; /* naranja aclarado, para fondo oscuro */
+  --color-brand-500: #f26522; /* acento principal / CTA */
+  --color-brand-600: #d35400; /* hover de CTA */
 
   /* ===== Superficies oscuras ===== */
-  --color-navy-900: #0a1e2f; /* hero, cajas oscuras */
+  --color-navy-900: #102a43; /* hero, cajas oscuras */
 
   /* ===== Superficies claras ===== */
   --color-surface: #f5f7fa;
@@ -18,7 +18,7 @@
   --color-ink: #1a2833;
   --color-ink-nav: #1a2e42;
   --color-ink-muted: #3d5670;
-  --color-ink-soft: #4a6a8a;
+  --color-ink-soft: #8a9bb0;
 
   /* ===== Logotipo =====
      Colores propios de la marca, tomados del original. No son parte de la
@@ -109,6 +109,27 @@ body {
   );
   background-size: 100% 200%;
   animation: pathFlowY 3s linear infinite;
+}
+
+@keyframes dashFlowX {
+  from {
+    background-position: 0 50%;
+  }
+  to {
+    background-position: -12px 50%;
+  }
+}
+
+/* Retorno del ciclo: guiones que avanzan. El periodo del degradado (12px) y el
+   desplazamiento de la animación coinciden, así que el bucle no da tirones. */
+@utility path-dash-x {
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--color-brand-500) 0 6px,
+    transparent 6px 12px
+  );
+  background-size: 12px 100%;
+  animation: dashFlowX 0.9s linear infinite;
 }
 
 /* Respetar la preferencia de menos movimiento en todo el sitio */

@@ -2,103 +2,145 @@ import { Fragment } from "react";
 import { Container } from "./container";
 import { IconAI, IconConsulting, IconProjects, IconSoftware } from "./icons";
 
+/** Cada servicio es un nodo del diagrama: título + un dato corto de su copy. */
 const SERVICES = [
   {
     Icon: IconSoftware,
     title: "Software a la medida",
-    description:
-      "Plataformas y sistemas adaptados a tus procesos, con arquitectura escalable y segura.",
+    meta: "arquitectura escalable",
   },
   {
     Icon: IconProjects,
     title: "Administración de proyectos",
-    description:
-      "Gestión ágil y tradicional con seguimiento de KPIs, riesgos y entregables.",
+    meta: "KPIs y entregables",
   },
-  {
-    Icon: IconAI,
-    title: "IA y automatización",
-    description:
-      "Optimizamos flujos de trabajo e integramos IA para decisiones más rápidas y eficientes.",
-  },
+  { Icon: IconAI, title: "IA y automatización", meta: "flujos optimizados" },
   {
     Icon: IconConsulting,
     title: "Gestión de equipos remotos",
-    description:
-      "Control de productividad y seguimiento estratégico para maximizar el rendimiento de tus recursos.",
+    meta: "seguimiento estratégico",
+    destacado: true,
   },
 ];
 
-/**
- * El recorrido serpentea a partir de `lg`:
- *
- *   [1] → [2]
- *          ↓
- *   [4] ← [3]
- *
- * El orden del DOM es 1 → conector → 2 → conector → 3 → conector → 4, y la
- * serpiente se arma solo con `col-start` / `row-start` desde `lg`. Al colapsar a
- * una columna en móvil todo queda en orden de lectura, sin marcado duplicado.
- */
-const CARD_PLACEMENT = [
-  "lg:col-start-1 lg:row-start-1",
-  "lg:col-start-3 lg:row-start-1",
-  "lg:col-start-3 lg:row-start-3",
-  "lg:col-start-1 lg:row-start-3",
+const POINTS = [
+  {
+    destacado: "Cuatro etapas conectadas",
+    resto: "cada una se apoya en la anterior.",
+  },
+  {
+    destacado: "Metodología según el proyecto",
+    resto: "ágil o tradicional, no una talla única.",
+  },
+  {
+    destacado: "Medible en cada paso",
+    resto: "KPIs, riesgos y entregables bajo control.",
+  },
 ];
 
-/** Tramo que precede a cada tarjeta a partir de la segunda. */
-const CONNECTORS = [
-  { direction: "right", placement: "lg:col-start-2 lg:row-start-1" },
-  { direction: "down", placement: "lg:col-start-3 lg:row-start-2" },
-  { direction: "left", placement: "lg:col-start-2 lg:row-start-3" },
-] as const;
+const KICKER =
+  "text-xs font-semibold tracking-[0.08em] text-brand-300 uppercase";
 
-function VerticalSegment({ className = "" }: { className?: string }) {
-  return (
-    <div className={`relative w-[3px] ${className}`}>
-      <div className="path-line-y h-full w-full rounded-full" />
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 border-x-[6px] border-t-[8px] border-x-transparent border-t-brand-300" />
-    </div>
-  );
-}
+/**
+ * El diagrama serpentea a partir de `md`:
+ *
+ *   [1] → [2] → [3]
+ *                ↓
+ *   ╌╌╌╌╌╌╌╌╌╌╌ [4]
+ *
+ * El orden del DOM es 1 → 2 → 3 → 4 y la forma se arma solo con `col-start` /
+ * `row-start`, así que al colapsar a una columna en móvil la lectura es correcta.
+ */
+const NODE_PLACEMENT = [
+  "md:col-start-1 md:row-start-1",
+  "md:col-start-3 md:row-start-1",
+  "md:col-start-5 md:row-start-1",
+  "md:col-start-5 md:row-start-3",
+];
 
-function HorizontalSegment({ direction }: { direction: "right" | "left" }) {
-  const toRight = direction === "right";
-  return (
-    <div className="relative h-[3px] w-full">
-      <div className="path-line-x h-full w-full rounded-full" />
-      <div
-        className={
-          toRight
-            ? "absolute top-1/2 right-0 -translate-y-1/2 border-y-[6px] border-l-[8px] border-y-transparent border-l-brand-300"
-            : "absolute top-1/2 left-0 -translate-y-1/2 border-y-[6px] border-r-[8px] border-y-transparent border-r-brand-300"
-        }
-      />
-    </div>
-  );
-}
+const LINKS = [
+  "md:col-start-2 md:row-start-1", // 1 → 2
+  "md:col-start-4 md:row-start-1", // 2 → 3
+  "md:col-start-5 md:row-start-2", // 3 ↓ 4
+];
 
-function Connector({
-  direction,
+/**
+ * Tramo del diagrama. En móvil siempre baja.
+ *
+ * El flujo lo dan las utilidades `path-line-*`: línea continua con un brillo que
+ * la recorre. Al pasar el ratón sube de opacidad y engorda. El área sensible es
+ * toda la celda, no la línea: 2px no se pueden apuntar con el ratón.
+ */
+function Link({
+  vertical,
   className,
 }: {
-  direction: (typeof CONNECTORS)[number]["direction"];
+  vertical: boolean;
   className: string;
 }) {
-  return (
-    <div aria-hidden className={className}>
-      {/* En móvil el camino siempre baja */}
-      <div className="flex justify-center py-3 lg:hidden">
-        <VerticalSegment className="h-12" />
-      </div>
+  const comun =
+    "rounded-full opacity-55 transition-all duration-300 group-hover/link:opacity-100";
 
-      <div className="hidden h-full w-full lg:flex lg:items-center lg:justify-center">
-        {direction === "down" ? (
-          <VerticalSegment className="h-full py-4" />
-        ) : (
-          <HorizontalSegment direction={direction} />
-        )}
+  return (
+    <div
+      aria-hidden
+      className={`group/link flex items-center justify-center md:self-stretch ${className}`}
+    >
+      {/* Móvil: el camino siempre baja */}
+      <div className={`path-line-y h-6 w-0.5 md:hidden ${comun}`} />
+
+      {vertical ? (
+        <div
+          className={`path-line-y hidden h-full w-0.5 group-hover/link:w-1 md:block ${comun}`}
+        />
+      ) : (
+        <div
+          className={`path-line-x hidden h-0.5 w-10 group-hover/link:h-1 md:block ${comun}`}
+        />
+      )}
+    </div>
+  );
+}
+
+function FlowNode({
+  Icon,
+  title,
+  meta,
+  destacado = false,
+}: (typeof SERVICES)[number] & { destacado?: boolean }) {
+  return (
+    <div
+      className={`relative flex h-full flex-col gap-4 rounded-lg border px-5 py-5 ${
+        destacado
+          ? "border-brand-500/40 bg-brand-500/12"
+          : "border-white/10 bg-white/8"
+      }`}
+    >
+      {/* Puntos de conexión a los lados */}
+      <span
+        aria-hidden
+        className="absolute top-1/2 -left-1.5 hidden size-2.5 -translate-y-1/2 rounded-full bg-white/25 md:block"
+      />
+      <span
+        aria-hidden
+        className="absolute top-1/2 -right-1.5 hidden size-2.5 -translate-y-1/2 rounded-full bg-white/25 md:block"
+      />
+
+      <span
+        className={`flex size-12 shrink-0 items-center justify-center rounded-lg ${
+          destacado ? "bg-brand-500/25" : "bg-white/10"
+        }`}
+      >
+        <Icon className="size-6 text-brand-300" />
+      </span>
+
+      <div>
+        <div className="text-[1.05rem] leading-tight font-medium text-white">
+          {title}
+        </div>
+        <div className="mt-1.5 text-[0.85rem] leading-tight text-white/45">
+          {meta}
+        </div>
       </div>
     </div>
   );
@@ -106,55 +148,94 @@ function Connector({
 
 export function ServicesSection() {
   return (
-    <Container>
-      <div id="servicios" className="py-15">
-        <div className="mb-14 rounded-lg border-l-4 border-brand-500 bg-navy-900 p-10">
-          <span className="mb-4 inline-block text-xs font-semibold tracking-[0.08em] text-brand-300 uppercase">
-            Consultoría Estratégica
-          </span>
-          <h2 className="mb-4 max-w-[760px] text-[1.8rem] leading-tight font-semibold text-white">
-            Integración tecnológica, automatización y gestión de equipos remotos
-          </h2>
-          <p className="max-w-[640px] text-[0.95rem] leading-relaxed text-white/65">
-            Cuatro etapas conectadas: cada una se apoya en la anterior para
-            optimizar tus procesos y recursos humanos.
-          </p>
-        </div>
+    <section
+      id="servicios"
+      className="bg-navy-900 bg-[radial-gradient(rgba(255,255,255,0.05)_1px,transparent_1px)] py-15 [background-size:24px_24px]"
+    >
+      <Container>
+        <div className="grid items-center gap-10 lg:grid-cols-[3fr_5fr] lg:gap-0">
+          {/* Columna de texto */}
+          <div className="lg:pr-10">
+            <span className={`mb-4 inline-block ${KICKER}`}>
+              Consultoría Estratégica
+            </span>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_7rem_1fr] lg:grid-rows-[auto_6rem_auto]">
-          {SERVICES.map(({ Icon, title, description }, i) => (
-            <Fragment key={title}>
-              {i > 0 && (
-                <Connector
-                  direction={CONNECTORS[i - 1].direction}
-                  className={CONNECTORS[i - 1].placement}
-                />
-              )}
+            <h2 className="mb-4 text-[1.8rem] leading-tight font-semibold tracking-tight text-white">
+              Integración tecnológica, automatización y gestión de equipos
+              remotos
+            </h2>
 
-              <div
-                style={{ animationDelay: `${(i + 1) * 0.1}s` }}
-                className={`group relative animate-card-entrance rounded-lg border border-line bg-surface-card p-7 pt-9 opacity-0 transition-all duration-400 ease-in-out hover:-translate-y-1.5 hover:border-brand-500 hover:shadow-[0_8px_40px_rgba(0,50,100,0.08)] ${CARD_PLACEMENT[i]}`}
+            <p className="max-w-[46ch] text-[1.05rem] leading-relaxed text-white/65">
+              Soluciones personalizadas para la optimización de tus procesos y
+              recursos humanos.
+            </p>
+
+            <ul className="mt-9 grid gap-6">
+              {POINTS.map(({ destacado, resto }) => (
+                <li
+                  key={destacado}
+                  className="border-l-2 border-white/15 pl-[18px] text-[0.95rem] leading-relaxed text-white/65"
+                >
+                  <b className="font-medium text-white">{destacado}</b> {resto}
+                </li>
+              ))}
+            </ul>
+
+            <a
+              href="#contacto"
+              className="group mt-9 inline-flex items-center gap-2.5 rounded-[4px] bg-brand-500 px-7 py-3.5 text-[0.95rem] font-semibold text-white no-underline transition-colors hover:bg-brand-600"
+            >
+              Agendar consultoría
+              <span
+                aria-hidden
+                className="transition-transform duration-300 group-hover:translate-x-1"
               >
-                {/* Nodo numerado del camino */}
-                <span className="absolute -top-5 left-7 flex size-10 items-center justify-center rounded-full bg-linear-to-br from-brand-500 to-brand-300 text-sm font-bold text-white ring-4 ring-surface transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_0_0_6px_rgba(0,98,255,0.12)]">
-                  {i + 1}
-                </span>
+                →
+              </span>
+            </a>
+          </div>
 
-                <div className="mb-4 flex size-11 items-center justify-center rounded-lg bg-brand-500/8 transition-all duration-400 group-hover:scale-104 group-hover:rotate-4 group-hover:bg-brand-500/15">
-                  <Icon className="size-6 text-brand-500 transition-transform duration-400 group-hover:scale-106 group-hover:-rotate-4" />
-                </div>
+          {/* Panel con el diagrama. El fondo translúcido deja pasar la trama de
+              puntos de la sección, así que no se repite aquí. */}
+          <div className="rounded-lg border border-white/8 bg-white/6 p-8 backdrop-blur-[4px] lg:p-10">
+            <span className={`block ${KICKER}`}>Servicios</span>
 
-                <h3 className="mb-1.5 text-[1.05rem] font-semibold text-navy-900">
-                  {title}
-                </h3>
-                <p className="text-[0.85rem] leading-relaxed text-ink-muted">
-                  {description}
-                </p>
+            <div className="mt-5 mb-10 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/8 px-4 py-2">
+              <span aria-hidden className="size-2 rounded-full bg-brand-500" />
+              <span className="text-[0.85rem] font-medium tracking-wide text-white/80">
+                Ruta completa
+              </span>
+              <span className="text-[0.85rem] text-white/40">4 etapas</span>
+            </div>
+
+            <div className="grid grid-cols-1 items-center md:grid-cols-[1fr_auto_1fr_auto_1fr] md:grid-rows-[auto_3.5rem_auto]">
+              {SERVICES.map((service, i) => (
+                <Fragment key={service.title}>
+                  {i > 0 && (
+                    <Link vertical={i === 3} className={LINKS[i - 1]} />
+                  )}
+                  <div className={`md:self-stretch ${NODE_PLACEMENT[i]}`}>
+                    <FlowNode {...service} />
+                  </div>
+                </Fragment>
+              ))}
+
+              {/* Retorno del ciclo hacia la primera etapa */}
+              <div
+                aria-hidden
+                className="group/dash hidden items-center md:col-span-4 md:col-start-1 md:row-start-3 md:flex"
+              >
+                <div className="path-dash-x h-0.5 w-full opacity-45 transition-opacity duration-300 group-hover/dash:opacity-100" />
               </div>
-            </Fragment>
-          ))}
+            </div>
+
+            <p className="mt-10 text-[0.85rem] text-white/40">
+              El ciclo se repite en cada proyecto: lo aprendido en la última
+              etapa alimenta la primera.
+            </p>
+          </div>
         </div>
-      </div>
-    </Container>
+      </Container>
+    </section>
   );
 }

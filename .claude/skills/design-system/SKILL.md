@@ -31,17 +31,17 @@ Para sombras y gradientes que sí necesitan valor arbitrario, referencia el toke
 
 | Token | Valor | Rol |
 |---|---|---|
-| `brand-300` | `#6ea8ff` | Acento **sobre fondo oscuro**: etiquetas, palabras destacadas, fin de gradiente |
-| `brand-500` | `#0062ff` | Acento principal. CTAs, iconos, bordes activos, nodos del camino |
-| `brand-600` | `#004bb5` | **Solo** hover de `brand-500` en botones |
-| `navy-900` | `#0a1e2f` | Fondo de bloques oscuros: hero, cajas destacadas. También títulos sobre claro |
+| `brand-300` | `#f28f60` | Acento **sobre fondo oscuro**: etiquetas, palabras destacadas, fin de gradiente |
+| `brand-500` | `#f26522` | Acento principal. CTAs, iconos, bordes activos, nodos del camino |
+| `brand-600` | `#d35400` | **Solo** hover de `brand-500` en botones |
+| `navy-900` | `#102a43` | Fondo de bloques oscuros: hero, cajas destacadas. También títulos sobre claro |
 | `surface` | `#f5f7fa` | Fondo del documento (`body`) |
 | `surface-raised` | `#f9fbfd` | Fondo de tarjeta en reposo — apenas se despega del fondo |
 | `surface-card` | `#ffffff` | Fondo de tarjeta **en hover**, y fondo del footer |
 | `ink` | `#1a2833` | Texto por defecto |
 | `ink-nav` | `#1a2e42` | Enlaces del nav |
 | `ink-muted` | `#3d5670` | Texto secundario dentro de tarjetas |
-| `ink-soft` | `#4a6a8a` | Texto terciario: footer, legales |
+| `ink-soft` | `#8a9bb0` | Texto terciario: footer, legales |
 | `line` | `#e8edf3` | Todos los bordes sobre fondo claro |
 
 Colores exclusivos del logotipo, **fuera** de la paleta de UI. Úsalos solo dentro de
@@ -54,8 +54,23 @@ Colores exclusivos del logotipo, **fuera** de la paleta de UI. Úsalos solo dent
 | `logo-steel` | `#49738b` | Barra central |
 | `logo-accent` | `#f3703c` | Barra corta (naranja) |
 
-La paleta de UI y la del logotipo son deliberadamente distintas: el azul eléctrico da a la
-interfaz más energía que el acero apagado del isotipo.
+La paleta de UI viene de `tempatev2.html`; la del logotipo son sus colores propios. Coinciden
+en familia (naranja + navy) pero **no en valor**: el naranja de la UI es `#f26522` y el del
+isotipo `#f3703c`. No los mezcles ni los unifiques sin decidirlo antes.
+
+### Deuda de contraste conocida
+
+Tres contrastes de esta paleta no llegan a WCAG AA y están pendientes de resolver:
+
+| Caso | Actual | Mínimo |
+|---|---|---|
+| Texto blanco sobre `brand-500` (todos los CTA) | 3.15:1 | 4.5:1 |
+| Texto blanco sobre `brand-600` (hover del CTA) | 4.17:1 | 4.5:1 |
+| `ink-soft` sobre fondo claro (footer) | 2.84:1 | 4.5:1 |
+
+`brand-500` sí sirve como elemento de UI —borde, icono— porque ahí el mínimo es 3:1 y da 3.15.
+Lo que no pasa es como **fondo con texto blanco encima**. Poner `text-navy-900` en los botones
+lo llevaría a 4.64:1 sin tocar el naranja.
 
 Sobre `navy-900` no se usan los tokens `ink-*` — el texto es `white`, `white/85`, `white/75`,
 `white/65` o `white/50` según jerarquía descendente.
@@ -86,7 +101,8 @@ llevan `tracking-[0.08em]`. Nunca uses `font-black` ni pesos por encima de 700.
 ### Forma y espaciado
 
 - **Radios**: `rounded-[4px]` en botones · `rounded-lg` (8px) en tarjetas y cajas · `rounded-full` solo en puntos indicadores.
-- **Contenedor**: usa siempre `<Container>` (`app/_components/container.tsx`) — 1280px máx., padding lateral 20px → 40px en `sm`. No re-implementes `max-w-*` + `px-*` a mano.
+- **Contenedor**: usa siempre `<Container>` (`app/_components/container.tsx`) — 20px de padding lateral en móvil, **10% desde `sm`**, sin tope de ancho. Es la regla horizontal única del sitio: si una sección no lo usa, no alinea con las demás. No re-implementes `px-*` a mano.
+  El 10% no baja a móvil a propósito: a 390px son 39px por lado y dejaban las tarjetas del hero con 60px útiles cuando sus subtítulos necesitan 70-73px, partiéndolos en dos líneas. Medido.
 - **Ritmo vertical**: `py-15` (60px) entre secciones · `p-10` (40px) dentro de cajas oscuras · `px-5 pt-7 pb-6` en tarjetas del pipeline.
 - **Breakpoints**: estándar de Tailwind. `sm:` (640px) reorganiza dentro de un bloque; `lg:` (1024px) es donde los grids pasan de una a dos columnas. Diseña mobile-first.
 
@@ -98,7 +114,8 @@ Tres animaciones registradas como tokens en `@theme`:
 |---|---|---|
 | `animate-pulse-glow` | Opacidad 0.3 ↔ 0.7, 4s | Resplandor decorativo del hero |
 | `animate-card-entrance` | Fade + subida 20px, 0.6s `forwards` | Entrada de tarjetas |
-| `path-line-x` / `path-line-y` | Línea sólida con un brillo que la recorre, 3s | Tramos del camino de servicios |
+| `path-line-x` / `path-line-y` | Línea sólida con un brillo que la recorre, 3s | Tramos del diagrama de servicios |
+| `path-dash-x` | Guiones que avanzan, 0.9s | Retorno del ciclo en el diagrama |
 
 `path-line-*` son utilidades (`@utility` en `globals.css`), no tokens de `@theme`, porque
 empaquetan fondo + tamaño + animación juntos. Aplícalas a un `div` que ya tenga alto/ancho:
@@ -107,6 +124,13 @@ empaquetan fondo + tamaño + animación juntos. Aplícalas a un `div` que ya ten
 **No animes la longitud de una línea de conexión** (`scaleX`/`scaleY`). Se probó y un camino
 que se encoge al 30% se lee como interrumpido, no como flujo. El brillo que recorre una línea
 sólida transmite dirección sin romper la continuidad.
+
+En `path-dash-x` el periodo del degradado (12px) y el desplazamiento de la animación coinciden;
+si se desfasan, el bucle da un tirón en cada vuelta.
+
+**Convención de resalte en los tramos**: reposo `opacity-55`, hover `opacity-100` y el doble de
+grosor. El área sensible es la celda de la rejilla, con `group/link`, **no la línea**: 2px no se
+pueden apuntar con el ratón.
 
 Todo el sitio respeta `prefers-reduced-motion: reduce` mediante una regla global en
 `globals.css` que anula animaciones y transiciones. No hace falta añadir `motion-reduce:*`
@@ -151,7 +175,85 @@ hover:shadow-[0_8px_40px_rgba(0,50,100,0.08)]
 `overflow-hidden` es obligatorio para que la barra respete el radio. `group` en el contenedor
 permite que los hijos reaccionen con `group-hover:`.
 
-### Camino de servicios (roadmap)
+### Sección de servicios: texto + diagrama
+
+`services-section.tsx`. Una sola fila: columna de texto a la izquierda y un panel con el
+diagrama de etapas a la derecha (`lg:grid-cols-[1fr_1.7fr]`).
+
+Columna de texto: kicker, `h2`, entradilla, lista de puntos con filete izquierdo y frase
+inicial destacada, y el botón primario.
+
+```
+border-l-2 border-white/15 pl-[18px]     en el <li>
+font-medium text-white                    en el <b> inicial
+```
+
+El reparto es **10 / 30 / 50 / 10** (lateral, texto, panel, lateral). El fondo va a sangre en la
+`<section>`; el `Container` de dentro aporta los dos 10%:
+
+```
+<section class="bg-navy-900 ...">     fondo a sangre
+  <Container>                          los dos 10% laterales
+    <div class="lg:grid-cols-[3fr_5fr] lg:gap-0">   30% y 50% del total
+      <div class="lg:pr-10">           separación entre columnas
+```
+
+El `gap` va a cero **a propósito**: cualquier hueco de rejilla se restaría del 30/50 y los
+porcentajes dejarían de cuadrar. La separación entre columnas sale del `pr-10` interno del
+texto, que vive dentro de su 30%.
+
+Los `fr` se calculan sobre el 80% que dejan los laterales, no sobre el total: para X% de texto
+e Y% de panel, la proporción es `X:Y` (aquí 30:50 → `3fr_5fr`).
+
+Diagrama: rejilla `md:grid-cols-[1fr_auto_1fr_auto_1fr]` con las columnas pares reservadas a
+los tramos. El orden del DOM es 1 → 2 → 3 → 4 y la forma se arma con `col-start` / `row-start`,
+así que en móvil colapsa a una columna en el orden correcto.
+
+**El icono va encima del texto en los nodos, no al lado.** Con el icono a la izquierda, la caja
+más el hueco más el padding se comen 94px de los 211px del nodo y solo quedan 117px para el
+texto: cualquier título en español parte en dos líneas. Apilándolo, el texto sube a 169px
+(+44%) y los metadatos caben en una línea. Se midió.
+
+Los nodos llevan `md:self-stretch` + `h-full` para igualar altura aunque un título ocupe dos
+líneas; sin eso, el `items-center` de la rejilla los deja de alturas distintas.
+
+**Los tramos verticales necesitan `md:self-stretch`.** La rejilla lleva `items-center`, que
+impide que la celda se estire; sin `self-stretch` el `h-full` del tramo resuelve contra una
+altura automática y la línea no se ve. Ya pasó una vez.
+
+El panel usa la tarjeta glassmorphism del sistema: su fondo translúcido deja pasar la trama de
+puntos de la sección, así que **no** se repite la trama dentro.
+
+### Filas alternadas de servicio — retirado
+
+`services-section.tsx`. Estructura tomada de `.pm-section` de primero.com, con nuestros
+colores y tipografía:
+
+```
+grid + lg:grid-cols-[1fr_1.7fr]      texto estrecho / pieza visual ancha
+invertida -> lg:grid-cols-[1.7fr_1fr] + lg:order-first en la pieza
+```
+
+Se alterna el lado en cada fila (el `--flip` del original). Las columnas se invierten **y** se
+reordena la pieza; en móvil el grid colapsa y el orden del DOM —texto y luego visual— ya es el
+correcto, sin marcado duplicado.
+
+Rasgo característico de la lista de puntos: filete a la izquierda y frase inicial destacada.
+
+```
+border-l-2 border-white/15 pl-[18px]     en el <li>
+font-medium text-white                    en el <b> inicial
+```
+
+La pieza visual usa la tarjeta glassmorphism del sistema. Su fondo translúcido deja pasar la
+trama de puntos de la sección, así que **no** se repite la trama dentro: dos tramas con
+orígenes distintos se ven desalineadas.
+
+Lo que **no** se copió del original: su titular de peso 400 y su CTA en píldora. Se usan el `h2`
+y el botón de nuestro sistema. El CTA por fila es un enlace de texto, no un botón sólido: cuatro
+botones naranjas seguidos competirían con la llamada real de la sección de contacto.
+
+### Camino de servicios (roadmap) — retirado
 
 `services-section.tsx`. Serpentea a partir de `lg`:
 
@@ -175,6 +277,23 @@ bg-linear-to-br from-brand-500 to-brand-300 text-sm font-bold text-white ring-4 
 El `ring-4 ring-surface` recorta el nodo contra el fondo de página. Por eso la tarjeta **no**
 puede llevar `overflow-hidden` (cortaría el nodo), y por eso esta tarjeta no usa la barra de
 gradiente superior del patrón anterior.
+
+### Fondo con trama de puntos
+
+La sección de servicios va sobre navy con una trama de puntos, tomada de `tempatev2.html`:
+
+```
+bg-navy-900
+bg-[radial-gradient(rgba(255,255,255,0.05)_1px,transparent_1px)]
+[background-size:24px_24px]
+```
+
+Van las tres juntas en el mismo elemento: `bg-navy-900` pinta el color y la segunda utilidad la
+imagen; no hacen falta pseudo-elementos. El elemento debe ser **a sangre** (fuera del
+`Container`), o la trama se corta al ancho del contenido.
+
+Nada dentro puede llevar un fondo opaco del mismo navy: taparía la trama y dejaría un rectángulo
+sin puntos, que se lee como un fallo.
 
 ### Tarjeta glassmorphism (sobre fondo oscuro)
 ```
