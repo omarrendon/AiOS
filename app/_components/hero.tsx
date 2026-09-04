@@ -2,6 +2,7 @@ import { Container } from "./container";
 import {
   IconAI,
   IconConsulting,
+  IconMarketing,
   IconProjectCount,
   IconProjects,
   IconSatisfaction,
@@ -16,34 +17,35 @@ const METRICS = [
 ];
 
 const CAPABILITIES = [
-  { Icon: IconSoftware, label: "Software", sub: "A medida" },
+  { Icon: IconConsulting, label: "Consultoría", sub: "Estratégica" },
   { Icon: IconProjects, label: "Proyectos", sub: "Administración" },
+  { Icon: IconSoftware, label: "Software", sub: "A medida" },
   { Icon: IconAI, label: "IA", sub: "Automatización" },
-  { Icon: IconConsulting, label: "Consultoría", sub: "Gestión remota" },
+  { Icon: IconMarketing, label: "Marketing", sub: "Digital" },
 ];
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-navy-900 py-8 sm:py-14 lg:pt-16 lg:pb-14">
-      {/* Resplandor decorativo del fondo */}
+    <section className="relative overflow-hidden bg-navy-900 py-7 sm:py-14">
+      {/* Resplandor decorativo */}
       <div
         aria-hidden
-        className="absolute top-[-20%] right-[-5%] h-[140%] w-[45%] rotate-10 animate-pulse-glow bg-[linear-gradient(135deg,rgba(242,101,34,0.06)_0%,transparent_70%)]"
+        className="absolute top-[-20%] right-[-5%] h-[140%] w-[45%] rotate-10 animate-pulse-glow bg-[linear-gradient(135deg,rgba(242,101,34,0.15)_0%,transparent_70%)]"
       />
 
       <Container className="relative z-10 grid items-center gap-9 lg:grid-cols-2 lg:gap-[50px]">
         <div>
-          <h1 className="mb-4 text-3xl leading-[1.15] font-bold tracking-tight text-white sm:text-[2.2rem] lg:text-[2.8rem]">
-            Soluciones{" "}
-            <span className="border-b-[3px] border-brand-500 pb-0.5 text-brand-300">
-              inteligentes
+          <h1 className="mb-4 text-3xl leading-[1.15] font-bold tracking-tight text-white lg:text-[2.8rem]">
+            Tecnología que{" "}
+            <span className="border-b-[3px] border-brand-500 pb-0.5 text-brand-500">
+              impulsa
             </span>{" "}
-            para la nueva era
+            tu negocio
           </h1>
 
           <p className="mb-7 max-w-full text-[1.05rem] leading-relaxed text-white/75 lg:max-w-[500px]">
             Desarrollo de software, automatización con IA y consultoría
-            estratégica para optimizar la gestión de tu negocio.
+            estratégica para optimizar la gestión de tu empresa.
           </p>
 
           <a
@@ -66,17 +68,20 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="grid grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
-          {CAPABILITIES.map(({ Icon, label, sub }) => (
+        {/* 5 tarjetas: tres arriba y dos abajo alineadas a la izquierda */}
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+          {CAPABILITIES.map(({ Icon, label, sub }, i) => (
             <div
               key={label}
-              className="rounded-lg border border-white/8 bg-white/6 px-1.5 py-3 text-center backdrop-blur-[4px] transition-all duration-300 hover:-translate-y-1 hover:bg-white/12 sm:px-2.5 sm:py-4 lg:px-3 lg:py-5"
+              className={`flex min-h-[100px] flex-col items-center justify-center rounded-xl border border-white/12 bg-white/8 px-3 py-4 text-center backdrop-blur-[8px] transition-all duration-300 hover:-translate-y-1 hover:border-brand-500 hover:bg-white/16 sm:min-h-[130px] sm:px-4 sm:py-6 ${
+                i === 3 ? "sm:col-start-1" : i === 4 ? "sm:col-start-2" : ""
+              }`}
             >
-              <Icon className="mx-auto mb-2 size-6 text-white/70 sm:size-7 lg:mb-2.5 lg:size-8" />
-              <div className="text-xs leading-tight font-medium text-white/85 sm:text-sm">
+              <Icon className="mb-2.5 size-6 text-white/80 sm:size-8" />
+              <div className="text-xs font-semibold text-white/90 sm:text-[0.9rem]">
                 {label}
               </div>
-              <div className="mt-0.5 text-[0.65rem] leading-tight text-white/50 sm:text-xs">
+              <div className="mt-0.5 text-[0.7rem] text-white/50 sm:text-xs">
                 {sub}
               </div>
             </div>

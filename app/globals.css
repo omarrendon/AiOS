@@ -2,41 +2,39 @@
 
 @theme {
   /* ===== Marca ===== */
-  --color-brand-300: #f28f60; /* naranja aclarado, para fondo oscuro */
-  --color-brand-500: #f26522; /* acento principal / CTA */
+  --color-brand-500: #f26522; /* acento: CTA, etiquetas, iconos, conectores */
   --color-brand-600: #d35400; /* hover de CTA */
 
   /* ===== Superficies oscuras ===== */
-  --color-navy-900: #102a43; /* hero, cajas oscuras */
+  --color-navy-900: #102a43; /* hero, pipeline, footer */
 
   /* ===== Superficies claras ===== */
-  --color-surface: #f5f7fa;
-  --color-surface-raised: #f9fbfd;
-  --color-surface-card: #ffffff;
+  --color-surface: #f5f7fa; /* fondo del documento */
+  --color-surface-raised: #fafbfc; /* tarjetas de enfoque, campos del formulario */
+  --color-surface-card: #ffffff; /* secciones claras */
 
   /* ===== Texto ===== */
-  --color-ink: #1a2833;
-  --color-ink-nav: #1a2e42;
-  --color-ink-muted: #3d5670;
-  --color-ink-soft: #8a9bb0;
+  --color-ink: #1a2833; /* texto por defecto */
+  --color-ink-nav: #1a2e42; /* enlaces del nav */
+  --color-ink-soft: #4a6a8a; /* texto secundario: entradillas, descripciones */
 
   /* ===== Logotipo =====
-     Colores propios de la marca, tomados del original. No son parte de la
-     paleta de UI: se usan solo dentro del logotipo. */
+     Colores propios de la marca. No son parte de la paleta de UI. */
   --color-logo-ink: #06213e;
   --color-logo-navy: #0f3559;
   --color-logo-steel: #49738b;
   --color-logo-accent: #f3703c;
 
   /* ===== Bordes ===== */
-  --color-line: #e8edf3;
+  --color-line: #e8edf3; /* header, separadores de sección */
+  --color-line-soft: #eef2f6; /* tarjetas de enfoque */
+  --color-line-strong: #e0e6ed; /* campos del formulario */
 
   /* ===== Tipografía ===== */
   --font-sans: var(--font-ibm-plex-sans), ui-sans-serif, system-ui, sans-serif;
 
   /* ===== Animaciones ===== */
   --animate-pulse-glow: pulseGlow 4s ease-in-out infinite;
-  --animate-card-entrance: cardEntrance 0.6s ease forwards;
 
   @keyframes pulseGlow {
     0%,
@@ -47,19 +45,6 @@
       opacity: 0.7;
     }
   }
-
-
-
-  @keyframes cardEntrance {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
 }
 
 body {
@@ -67,69 +52,87 @@ body {
   color: var(--color-ink);
 }
 
-/* ===== Camino de servicios =====
-   Línea continua con un brillo que la recorre. Se prefiere sobre animar la
-   longitud (scaleX/scaleY): un camino que se encoge se lee como interrumpido. */
+/* ===== Conectores del pipeline =====
+   Cada tramo es un degradado de tres paradas que se desplaza (el "flujo") más
+   un punto que lo recorre. El degradado se define con `color-mix` sobre el
+   token, para no repetir el hex de marca. */
 
-@keyframes pathFlowX {
+@keyframes flowLineH {
   from {
-    background-position: 200% 50%;
+    background-position: 0 0;
   }
   to {
-    background-position: 0% 50%;
+    background-position: 200% 0;
   }
 }
 
-@keyframes pathFlowY {
+@keyframes flowLineV {
   from {
-    background-position: 50% 200%;
+    background-position: 0 0;
   }
   to {
-    background-position: 50% 0%;
+    background-position: 0 200%;
   }
 }
 
-@utility path-line-x {
+@keyframes moveDotH {
+  0% {
+    right: -3px;
+    opacity: 0;
+  }
+  10%,
+  90% {
+    opacity: 1;
+  }
+  100% {
+    right: calc(100% + 3px);
+    opacity: 0;
+  }
+}
+
+@keyframes moveDotV {
+  0% {
+    bottom: -3px;
+    opacity: 0;
+  }
+  10%,
+  90% {
+    opacity: 1;
+  }
+  100% {
+    bottom: calc(100% + 3px);
+    opacity: 0;
+  }
+}
+
+@utility connector-line-h {
   background-image: linear-gradient(
     90deg,
-    var(--color-brand-500),
-    var(--color-brand-300),
-    var(--color-brand-500)
+    color-mix(in srgb, var(--color-brand-500) 20%, transparent),
+    color-mix(in srgb, var(--color-brand-500) 80%, transparent),
+    color-mix(in srgb, var(--color-brand-500) 20%, transparent)
   );
   background-size: 200% 100%;
-  animation: pathFlowX 3s linear infinite;
+  animation: flowLineH 2.5s linear infinite;
 }
 
-@utility path-line-y {
+@utility connector-line-v {
   background-image: linear-gradient(
     180deg,
-    var(--color-brand-500),
-    var(--color-brand-300),
-    var(--color-brand-500)
+    color-mix(in srgb, var(--color-brand-500) 20%, transparent),
+    color-mix(in srgb, var(--color-brand-500) 80%, transparent),
+    color-mix(in srgb, var(--color-brand-500) 20%, transparent)
   );
   background-size: 100% 200%;
-  animation: pathFlowY 3s linear infinite;
+  animation: flowLineV 2.5s linear infinite;
 }
 
-@keyframes dashFlowX {
-  from {
-    background-position: 0 50%;
-  }
-  to {
-    background-position: -12px 50%;
-  }
+@utility connector-dot-h {
+  animation: moveDotH 2.5s linear infinite;
 }
 
-/* Retorno del ciclo: guiones que avanzan. El periodo del degradado (12px) y el
-   desplazamiento de la animación coinciden, así que el bucle no da tirones. */
-@utility path-dash-x {
-  background-image: repeating-linear-gradient(
-    90deg,
-    var(--color-brand-500) 0 6px,
-    transparent 6px 12px
-  );
-  background-size: 12px 100%;
-  animation: dashFlowX 0.9s linear infinite;
+@utility connector-dot-v {
+  animation: moveDotV 2.5s linear infinite;
 }
 
 /* Respetar la preferencia de menos movimiento en todo el sitio */

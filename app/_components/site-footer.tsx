@@ -4,25 +4,24 @@ import { Logo } from "./logo";
 const FOOTER_LINKS = [
   { href: "#", label: "Política de privacidad" },
   { href: "#", label: "Términos de uso" },
-  { href: "#contacto", label: "Contacto" },
 ];
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-line bg-surface-card pt-8 pb-6">
-      <Container className="flex flex-wrap items-center justify-between gap-4">
+    <footer className="bg-navy-900 py-5">
+      <Container className="flex flex-col items-center gap-4 text-center sm:flex-row sm:justify-between sm:text-left">
         <Logo size="footer" />
 
-        <p className="text-[0.85rem] text-ink-soft">
-          © 2026 AiOS · Soluciones tecnológicas para la nueva era digital.
+        <p className="text-[0.78rem] font-light text-white/50">
+          © 2026 AiOS · Todos los derechos reservados.
         </p>
 
-        <div className="flex gap-6">
+        <div className="flex flex-wrap justify-center gap-6">
           {FOOTER_LINKS.map((link) => (
             <a
               key={link.label}
               href={link.href}
-              className="text-[0.82rem] text-ink-soft no-underline transition-colors hover:text-brand-500"
+              className="text-[0.78rem] text-white/50 no-underline transition-colors hover:text-brand-500"
             >
               {link.label}
             </a>

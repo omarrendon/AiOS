@@ -5,8 +5,8 @@ import { Container } from "./container";
 import { Logo } from "./logo";
 
 const NAV_LINKS = [
-  { href: "#servicios", label: "Servicios" },
-  { href: "#contacto", label: "Contacto" },
+  { href: "#servicios", label: "Proceso" },
+  { href: "#enfoque", label: "Consultoría" },
 ];
 
 const LINK_BASE =
@@ -25,12 +25,9 @@ export function SiteHeader() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Escape cierra el menú
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [open]);
@@ -46,22 +43,28 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`sticky top-0 z-50 border-b border-line bg-white/96 py-[14px] backdrop-blur-md transition-shadow duration-300 ${
+      className={`sticky top-0 z-50 border-b border-line bg-white/96 py-2.5 backdrop-blur-md transition-shadow duration-300 ${
         scrolled || open ? "shadow-[0_4px_20px_rgba(0,0,0,0.06)]" : ""
       }`}
     >
-      <Container className="flex items-center justify-between gap-4">
+      <Container className="flex items-center justify-between gap-3">
         <Logo />
 
-        {/* Escritorio */}
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav className="hidden items-center gap-5 md:flex">
           {NAV_LINKS.map((link) => (
-            <a key={link.href} href={link.href} className={`${LINK_BASE} text-sm`}>
+            <a
+              key={link.href}
+              href={link.href}
+              className={`${LINK_BASE} text-[0.8rem]`}
+            >
               {link.label}
             </a>
           ))}
-          <a href="#contacto" className={`${CTA_BASE} px-6 py-2 text-sm`}>
-            Consultoría
+          <a
+            href="#contacto"
+            className={`${CTA_BASE} px-[18px] py-1.5 text-[0.8rem]`}
+          >
+            Contacto
           </a>
         </nav>
 
@@ -94,13 +97,9 @@ export function SiteHeader() {
         </button>
       </Container>
 
-      {/* Panel móvil. Va en superposición (absolute) a propósito: si empujara el
-          contenido, la altura del header cambiaría al cerrarse y el desplazamiento
-          hacia el ancla aterrizaría desviado.
-
-          Fondo opaco, no el `bg-white/96` translúcido del header: ese 4% basta
-          para que el texto blanco del hero se transparente como un fantasma
-          detrás de los enlaces. */}
+      {/* Panel móvil en superposición: si empujara el contenido, la altura del
+          header cambiaría al cerrarse y el desplazamiento al ancla aterrizaría
+          desviado. Fondo opaco, o el hero se transparenta tras los enlaces. */}
       <div
         id="menu-movil"
         className={`absolute inset-x-0 top-full origin-top border-b border-line bg-surface-card shadow-[0_12px_24px_rgba(0,0,0,0.08)] transition-all duration-300 ease-out md:hidden ${
@@ -126,7 +125,7 @@ export function SiteHeader() {
               onClick={() => setOpen(false)}
               className={`${CTA_BASE} mt-2 mb-1 px-6 py-3 text-center text-base`}
             >
-              Consultoría
+              Contacto
             </a>
           </nav>
         </Container>

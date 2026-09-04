@@ -1,36 +1,55 @@
 import { Container } from "./container";
-import { IconMail } from "./icons";
+import { ContactForm } from "./contact-form";
+import { IconMail, IconMapPin, IconPhone } from "./icons";
+
+const DATOS = [
+  { Icon: IconMail, texto: "contacto@aios.com" },
+  { Icon: IconPhone, texto: "+52 473 181 7324" },
+  { Icon: IconPhone, texto: "+52 951 408 2442" },
+  { Icon: IconMapPin, texto: "Gto. capital y Oax. de Juárez" },
+];
 
 export function ContactSection() {
   return (
-    // Padding de sección en vez de un `mb-*` suelto, igual que ServicesSection:
-    // así el aire de arriba y el de abajo se controlan en el mismo sitio.
-    <section className="pt-24 pb-15">
+    <section
+      id="contacto"
+      className="scroll-mt-[70px] border-t border-line bg-surface-card py-10 sm:py-16"
+    >
       <Container>
-        <div
-          id="contacto"
-          className="flex flex-col items-start gap-6 rounded-lg border-l-4 border-brand-500 bg-navy-900 p-10 lg:flex-row lg:items-center lg:justify-between lg:gap-10"
-        >
-          <div>
-            <span className="mb-4 inline-block text-xs font-semibold tracking-[0.08em] text-brand-300 uppercase">
-              Contacto
-            </span>
-            <h2 className="mb-4 max-w-[640px] text-[1.8rem] leading-tight font-semibold text-white">
-              ¿Listo para optimizar tus procesos?
-            </h2>
-            <p className="max-w-[560px] text-[0.95rem] leading-relaxed text-white/65">
-              Cuéntanos qué necesitas y te respondemos con una propuesta
-              concreta. Sin compromiso.
+        <span className="mb-3 inline-block text-[0.7rem] font-semibold tracking-[0.12em] text-brand-500 uppercase">
+          Contacto
+        </span>
+
+        <h2 className="mb-3 text-2xl font-semibold tracking-tight text-navy-900 sm:text-[2rem]">
+          Hablemos de tu proyecto
+        </h2>
+
+        <p className="mb-10 max-w-[600px] leading-relaxed text-ink-soft">
+          Cuéntanos qué necesitas y te ayudaremos a encontrar la mejor solución
+          tecnológica para tu negocio.
+        </p>
+
+        <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-[50px]">
+          <div className="pt-2">
+            <p className="mb-5 text-[0.95rem] leading-[1.7] text-ink-soft">
+              ¿Tienes una idea, un proyecto o necesitas asesoría? Estamos aquí
+              para ayudarte. Completa el formulario o contáctanos directamente.
             </p>
+
+            <ul className="flex flex-col gap-3.5">
+              {DATOS.map(({ Icon, texto }) => (
+                <li
+                  key={texto}
+                  className="flex items-center gap-3.5 text-[0.9rem] text-ink"
+                >
+                  <Icon className="size-5 shrink-0 text-brand-500" />
+                  {texto}
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <a
-            href="mailto:contacto@aios.mx"
-            className="inline-flex shrink-0 items-center gap-2.5 rounded-[4px] bg-brand-500 px-10 py-[14px] font-semibold text-white no-underline transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-brand-600"
-          >
-            <IconMail className="size-5" />
-            Agendar consultoría
-          </a>
+          <ContactForm />
         </div>
       </Container>
     </section>
